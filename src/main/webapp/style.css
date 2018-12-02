@@ -1,0 +1,28 @@
+body {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 11pt;
+    background-color: #ECE9E0;
+    color: #333;
+}
+h1, h2, h3 {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    color: #656665;
+}
+table {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 5px;
+    background: #D3C084;
+    color: #656665;
+    border: 16px solid #D3C084;
+    border-radius: 20px;
+}
+th {
+    font-size: 18px;
+    padding: 10px;
+}
+td {
+    background: #F5D7BF;
+    padding: 10px;
+}
