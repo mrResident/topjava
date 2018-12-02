@@ -29,11 +29,7 @@
         <th>Calories</th>
     </tr>
         <c:forEach items="${mealList}" var="item">
-            <c:set var = "cellColor" value = "\"color: #656665\""/>
-            <c:if test="${item.exceed}">
-                <c:set var = "cellColor" value = "\"color: #FF0000\""/>
-            </c:if>
-            <tr style=${cellColor}>
+            <tr style=${item.exceed ? "\"color: #FF0000\"" : "\"color: #656665\""}>
                 <td>${item.dateTime.format(dateTimePatternt)}</td>
                 <td>${item.description}</td>
                 <td>${item.calories}</td>
