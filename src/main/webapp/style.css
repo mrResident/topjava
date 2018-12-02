@@ -4,10 +4,6 @@ body {
     background-color: #ECE9E0;
     color: #333;
 }
-h1, h2, h3 {
-    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-    color: #656665;
-}
 table {
     font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     text-align: left;
