@@ -43,11 +43,6 @@ public class MealsUtil {
         System.out.println(getFilteredWithExceededByCycle(MEALS, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
         System.out.println(getFilteredWithExceededInOnePass(MEALS, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
         System.out.println(getFilteredWithExceededInOnePass2(MEALS, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
-        System.out.println(getWithExceed(MEALS,2000));
-    }
-
-    public static List<MealWithExceed> getWithExceed(List<Meal> meals, int caloriesPerDay) {
-        return getFilteredWithExceeded(meals, LocalTime.of(0, 0), LocalTime.of(23, 59), caloriesPerDay);
     }
 
     public static List<MealWithExceed> getFilteredWithExceeded(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
