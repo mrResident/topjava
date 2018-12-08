@@ -22,3 +22,30 @@ td {
     background: #F5D7BF;
     padding: 10px;
 }
+input[type=button], input[type=submit], input[type=reset] {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    background: #D3C084;
+    border: none;
+    color: #656665;
+    font-size: 14px;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+input[type=datetime-local] {
+    border: 2px solid #656665;
+    border-radius: 4px;
+    height: 32px;
+}
+input[type=text]:focus {
+    border: 2px solid #F5D7BF;
+}
+input[type=text] {
+    border: 2px solid #656665;
+    border-radius: 4px;
+    height: 32px;
+}
+input[type=text]:focus {
+    border: 2px solid #F5D7BF;
+}
