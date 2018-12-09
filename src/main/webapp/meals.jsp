@@ -23,31 +23,29 @@
 <table>
     <caption>Meals table</caption>
     <tr>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Calories</th>
+        <th align="center">Date</th>
+        <th align="center">Description</th>
+        <th align="center">Calories</th>
+        <th colspan=2 align="center">Action</th>
     </tr>
         <c:forEach items="${mealList}" var="item">
             <tr style=${item.exceed ? "\"color: #FF0000\"" : "\"color: #656665\""}>
-                <td>${item.id}</td>
                 <td>${item.dateTime.format(dtFormatter)}</td>
                 <td>${item.description}</td>
                 <td>${item.calories}</td>
                 <td>
                     <form action = "<c:url value="meals"/>" method="post">
-                        <input type="hidden" name="page_caption" value="Edit entry with id=${item.id}">
+                        <input type="hidden" name="page_caption" value="Edit entry">
                         <input type="hidden" name="id" value="${item.id}">
-                        <input type="hidden" name="date" value="${item.dateTime}">
-                        <input type="hidden" name="description" value="${item.description}">
-                        <input type="hidden" name="calories" value="${item.calories}">
                         <input type="hidden" name="button_caption" value="Edit">
+                        <input type="hidden" name="action" value="edit">
                         <input type="submit" name="edit" value="Edit">
                     </form>
                 </td>
                 <td>
                     <form action = "<c:url value="meals"/>" method="post">
                         <input type="hidden" name="id" value="${item.id}">
+                        <input type="hidden" name="action" value="delete">
                         <input type="submit" name="delete" value="Delete">
                     </form>
                 </td>
@@ -59,6 +57,7 @@
 <form action = "<c:url value="meals"/>" method="post">
     <input type="hidden" name="page_caption" value="Add new entry to the database">
     <input type="hidden" name="button_caption" value="Add">
+    <input type="hidden" name="action" value="add">
     <input type="submit" name="add" value="Add new entry to the database">
 </form>
 </body>

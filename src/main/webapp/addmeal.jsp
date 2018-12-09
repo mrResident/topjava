@@ -16,13 +16,16 @@
 <body>
 <h1><a href="meals">Go to Meals list</a></h1><br>
 <h2>${param.get("page_caption")}</h2>
+<c:if test="${mealBeen != null}">
+    <jsp:useBean id="mealBeen" scope="request" type="ru.javawebinar.topjava.model.Meal" />
+</c:if>
 <form action = "<c:url value="meals"/>" method="post">
     <table>
         <tr>
             <td>Date:</td>
             <td>
                 <label>
-                    <input type="datetime-local" name="datetime-local" value="${param.get("date")}">
+                    <input type="datetime-local" name="datetime-local" value="${mealBeen.dateTime}">
                 </label>
             </td>
         </tr>
@@ -31,7 +34,7 @@
                 Description:
             </td>
             <td>
-                <input required type="text" name="description" placeholder="Description" value="${param.get("description")}">
+                <input required type="text" name="description" placeholder="Description" value="${mealBeen.description}">
             </td>
         </tr>
         <tr>
@@ -39,12 +42,13 @@
                 Calories:
             </td>
             <td>
-                <input required type="text" name="calories" placeholder="Calories" value="${param.get("calories")}">
+                <input required type="text" name="calories" placeholder="Calories" value="${mealBeen.calories}">
             </td>
         </tr>
     </table>
     <br><br>
-    <input type="hidden" name="id_edit" value="${param.get("id")}">
+    <input type="hidden" name="id_edit" value="${mealBeen.id}">
+    <input type="hidden" name="action" value="create">
     <input type="submit" name="create" value="${param.get("button_caption")}">
 </form>
 </body>

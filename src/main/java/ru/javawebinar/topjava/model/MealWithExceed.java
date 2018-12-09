@@ -7,13 +7,14 @@ public class MealWithExceed {
     private final String description;
     private final int calories;
     private final boolean exceed;
-    private long id;
+    private final long id;
 
-    public MealWithExceed(LocalDateTime dateTime, String description, int calories, boolean exceed) {
+    public MealWithExceed(LocalDateTime dateTime, String description, int calories, boolean exceed, long id) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.exceed = exceed;
+        this.id = id;
     }
 
     @Override
@@ -44,9 +45,5 @@ public class MealWithExceed {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 }
