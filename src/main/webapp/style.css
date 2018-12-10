@@ -28,7 +28,7 @@ input[type=button], input[type=submit], input[type=reset] {
     border: none;
     color: #656665;
     font-size: 14px;
-    padding: 16px 32px;
+    padding: 10px 26px;
     text-decoration: none;
     margin: 4px 2px;
     cursor: pointer;
@@ -48,4 +48,18 @@ input[type=text] {
 }
 input[type=text]:focus {
     border: 2px solid #F5D7BF;
+}
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    apperance: button;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    background: #D3C084;
+    border: none;
+    color: #656665;
+    font-size: 14px;
+    padding: 10px 26px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
 }

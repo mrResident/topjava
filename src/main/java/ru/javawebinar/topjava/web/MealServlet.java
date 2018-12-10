@@ -23,90 +23,85 @@ public class MealServlet extends HttpServlet {
 
     private static final String ACTION_ADD = "add";
     private static final String ACTION_EDIT = "edit";
-    private static final String ACTION_CREATE = "create";
     private static final String ACTION_DELETE = "delete";
     private static final Logger log = getLogger(MealServlet.class);
     private static final MealMemoryDatasetDao DATASET_DAO = new MealMemoryDatasetDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<MealWithExceed> mealWithExceedList = MealsUtil.getFilteredWithExceeded(
-            DATASET_DAO.findAll(),
-            LocalTime.MIN,
-            LocalTime.MAX,
-            2000
-        );
-        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        request.setAttribute("mealList", mealWithExceedList);
-        request.setAttribute("dtFormatter", dtFormatter);
-        request.getRequestDispatcher("meals.jsp").forward(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
-        String action = req.getParameter("action");
+        String action = request.getParameter("action");
         if (action != null) {
+            long id = 0;
+            if (request.getParameter("id") != null) {
+                try {
+                    id = Integer.parseInt(request.getParameter("id"));
+                } catch (Exception e) {
+                    log.error("Invalid ID: ", e);
+                }
+            }
             switch (action.toLowerCase()) {
                 case ACTION_ADD: {
                     log.debug("Open new form for adding new entry to the database");
-                    req.getRequestDispatcher("addmeal.jsp").forward(req, resp);
-                }
-                break;
-                case ACTION_CREATE: {
-                    try {
-                        Meal meal = new Meal(
-                            LocalDateTime.parse(req.getParameter("datetime-local")),
-                            req.getParameter("description"),
-                            Integer.parseInt(req.getParameter("calories"))
-                        );
-                        if (!req.getParameter("id_edit").isEmpty()) {
-                            long id = Integer.parseInt(req.getParameter("id_edit"));
-                            meal.setId(id);
-                            DATASET_DAO.update(meal);
-                        } else {
-                            DATASET_DAO.create(meal);
-                        }
-                    } catch (Exception e) {
-                        log.error("Entry was not created/updated: ", e);
-                    } finally {
-                        resp.sendRedirect("meals");
-                    }
+                    request.getRequestDispatcher("addmeal.jsp").forward(request, response);
                 }
                 break;
                 case ACTION_EDIT: {
                     try {
-                        long id = Integer.parseInt(req.getParameter("id"));
                         log.debug("Open form for edit entry with id = {}", id);
                         Meal meal = DATASET_DAO.findById(id);
                         if (meal != null) {
-                            req.setAttribute("mealBeen", meal);
-                            req.getRequestDispatcher("addmeal.jsp").forward(req, resp);
+                            request.setAttribute("mealBean", meal);
+                            request.getRequestDispatcher("addmeal.jsp").forward(request, response);
                         } else {
                             throw new Exception("Entry with id = " + id + " was not found");
                         }
                     } catch (Exception e) {
                         log.error("Entry was not edited: ", e);
-                        resp.sendRedirect("meals");
                     }
                 }
                 break;
                 case ACTION_DELETE: {
-                    try {
-                        DATASET_DAO.delete(Integer.parseInt(req.getParameter("id")));
-                    } catch (Exception e) {
-                        log.error("Entry was not deleted: ", e);
-                    } finally {
-                        resp.sendRedirect("meals");
-                    }
+                    DATASET_DAO.delete(id);
+                    response.sendRedirect("meals");
                 }
                 break;
                 default: {
-                    resp.sendRedirect("meals");
+                    response.sendRedirect("meals");
                 }
             }
         } else {
-            log.error("Action not found!");
+            List<MealWithExceed> mealWithExceedList = MealsUtil.getFilteredWithExceeded(
+                DATASET_DAO.findAll(),
+                LocalTime.MIN,
+                LocalTime.MAX,
+                2000
+            );
+            DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            request.setAttribute("mealList", mealWithExceedList);
+            request.setAttribute("dtFormatter", dtFormatter);
+            request.getRequestDispatcher("meals.jsp").forward(request, response);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.setCharacterEncoding("UTF-8");
+        try {
+                Meal meal = new Meal(
+                    LocalDateTime.parse(req.getParameter("datetime-local")),
+                    req.getParameter("description"),
+                    Integer.parseInt(req.getParameter("calories"))
+                );
+                if (!req.getParameter("id_edit").isEmpty()) {
+                    long id = Integer.parseInt(req.getParameter("id_edit"));
+                    meal.setId(id);
+                    DATASET_DAO.update(meal);
+                } else {
+                    DATASET_DAO.create(meal);
+                }
+        } catch (Exception e) {
+            log.error("Entry was not created/updated: ", e);
+        } finally {
             resp.sendRedirect("meals");
         }
     }

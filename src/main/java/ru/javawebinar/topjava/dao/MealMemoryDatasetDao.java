@@ -21,22 +21,22 @@ public class MealMemoryDatasetDao implements CRUD<Meal> {
     }
 
     @Override
-    public Meal create(final Meal data) {
-        if (data == null) {
+    public Meal create(final Meal meal) {
+        if (meal == null) {
             log.error("[createOrUpdate] dataSource not changed, because input data is null.");
             return null;
         }
         long newID = counter.addAndGet(1);
-        data.setId(newID);
-        dataSource.put(newID, data);
+        meal.setId(newID);
+        dataSource.put(newID, meal);
         log.debug("[create] New entry was created sucsesfull.");
-        return data;
+        return meal;
     }
 
     @Override
-    public void update(final Meal data) {
-        if (data != null && dataSource.replace(data.getId(), data) != null) {
-            log.debug("[update] Entry with id = {} was updated in dataSource.", data.getId());
+    public void update(final Meal meal) {
+        if (meal != null && dataSource.replace(meal.getId(), meal) != null) {
+            log.debug("[update] Entry with id = {} was updated in dataSource.", meal.getId());
         } else {
             log.debug("[update] Entry was not updated in dataSource!");
         }

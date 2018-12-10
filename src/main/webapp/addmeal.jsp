@@ -15,9 +15,9 @@
 </head>
 <body>
 <h1><a href="meals">Go to Meals list</a></h1><br>
-<h2>${param.get("page_caption")}</h2>
-<c:if test="${mealBeen != null}">
-    <jsp:useBean id="mealBeen" scope="request" type="ru.javawebinar.topjava.model.Meal" />
+<h2>${param.get("id") == null ? "Add new entry to the database" : "Edit entry"}</h2>
+<c:if test="${mealBean != null}">
+    <jsp:useBean id="mealBean" scope="request" type="ru.javawebinar.topjava.model.Meal" />
 </c:if>
 <form action = "<c:url value="meals"/>" method="post">
     <table>
@@ -25,7 +25,7 @@
             <td>Date:</td>
             <td>
                 <label>
-                    <input type="datetime-local" name="datetime-local" value="${mealBeen.dateTime}">
+                    <input type="datetime-local" name="datetime-local" value="${mealBean.dateTime}">
                 </label>
             </td>
         </tr>
@@ -34,7 +34,7 @@
                 Description:
             </td>
             <td>
-                <input required type="text" name="description" placeholder="Description" value="${mealBeen.description}">
+                <input required type="text" name="description" placeholder="Description" value="${mealBean.description}">
             </td>
         </tr>
         <tr>
@@ -42,14 +42,13 @@
                 Calories:
             </td>
             <td>
-                <input required type="text" name="calories" placeholder="Calories" value="${mealBeen.calories}">
+                <input required type="text" name="calories" placeholder="Calories" value="${mealBean.calories}">
             </td>
         </tr>
     </table>
     <br><br>
-    <input type="hidden" name="id_edit" value="${mealBeen.id}">
-    <input type="hidden" name="action" value="create">
-    <input type="submit" name="create" value="${param.get("button_caption")}">
+    <input type="hidden" name="id_edit" value="${mealBean.id}">
+    <input type="submit" name="create" value="${param.get("id") == null ? "Add" : "Edit"}">
 </form>
 </body>
 </html>

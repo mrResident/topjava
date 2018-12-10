@@ -34,31 +34,16 @@
                 <td>${item.description}</td>
                 <td>${item.calories}</td>
                 <td>
-                    <form action = "<c:url value="meals"/>" method="post">
-                        <input type="hidden" name="page_caption" value="Edit entry">
-                        <input type="hidden" name="id" value="${item.id}">
-                        <input type="hidden" name="button_caption" value="Edit">
-                        <input type="hidden" name="action" value="edit">
-                        <input type="submit" name="edit" value="Edit">
-                    </form>
+                    <a href="meals?action=edit&id=${item.id}" class="button">Edit</a>
                 </td>
                 <td>
-                    <form action = "<c:url value="meals"/>" method="post">
-                        <input type="hidden" name="id" value="${item.id}">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="submit" name="delete" value="Delete">
-                    </form>
+                    <a href="meals?action=delete&id=${item.id}" class="button">Delete</a>
                 </td>
             </tr>
         </c:forEach>
 </table>
 <br>
 <br>
-<form action = "<c:url value="meals"/>" method="post">
-    <input type="hidden" name="page_caption" value="Add new entry to the database">
-    <input type="hidden" name="button_caption" value="Add">
-    <input type="hidden" name="action" value="add">
-    <input type="submit" name="add" value="Add new entry to the database">
-</form>
+<a href="meals?action=add" class="button">Add new entry to the database</a>
 </body>
 </html>
