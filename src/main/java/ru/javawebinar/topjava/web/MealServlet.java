@@ -28,6 +28,11 @@ public class MealServlet extends HttpServlet {
     private static final MealMemoryDatasetDao DATASET_DAO = new MealMemoryDatasetDao();
 
     @Override
+    public void init() throws ServletException {
+        MealsUtil.MEALS.forEach(DATASET_DAO::create);
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         if (action != null) {
