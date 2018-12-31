@@ -69,28 +69,20 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
-            case "reset_date_time_filter":
-                log.debug("Reset filter");
-                mealRestController.setFilterDate(MealRestController.START_DATE, "");
-                mealRestController.setFilterDate(MealRestController.END_DATE, "");
-                mealRestController.setFilterTime(MealRestController.START_TIME, "");
-                mealRestController.setFilterTime(MealRestController.END_TIME, "");
-                response.sendRedirect("meals");
-                break;
             case "set_date_time_filter":
                 log.debug("Set date/time filter");
-                mealRestController.setFilterDate(MealRestController.START_DATE, request.getParameter(MealRestController.START_DATE));
-                mealRestController.setFilterDate(MealRestController.END_DATE, request.getParameter(MealRestController.END_DATE));
-                mealRestController.setFilterTime(MealRestController.START_TIME, request.getParameter(MealRestController.START_TIME));
-                mealRestController.setFilterTime(MealRestController.END_TIME, request.getParameter(MealRestController.END_TIME));
+                request.setAttribute("meals", mealRestController.getAllFiltered(
+                    request.getParameter(MealRestController.START_DATE),
+                    request.getParameter(MealRestController.START_TIME),
+                    request.getParameter(MealRestController.END_DATE),
+                    request.getParameter(MealRestController.END_TIME)
+                ));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute(MealRestController.START_DATE, mealRestController.getFilterDate(MealRestController.START_DATE));
-                request.setAttribute(MealRestController.END_DATE, mealRestController.getFilterDate(MealRestController.END_DATE));
-                request.setAttribute(MealRestController.START_TIME, mealRestController.getFilterTime(MealRestController.START_TIME));
-                request.setAttribute(MealRestController.END_TIME, mealRestController.getFilterTime(MealRestController.END_TIME));
-                request.setAttribute("meals", mealRestController.getAllFiltered());
+                request.setAttribute("meals", mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

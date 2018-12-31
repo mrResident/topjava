@@ -7,16 +7,12 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealWithExceed;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -34,16 +30,10 @@ public class MealRestController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     private final MealService service;
-    private Map<String, LocalDate> filterDate = new HashMap<>();
-    private Map<String, LocalTime> filterTime = new HashMap<>();
 
     @Autowired
     public MealRestController(MealService service) {
         this.service = service;
-        filterDate.put(MealRestController.START_DATE, null);
-        filterDate.put(MealRestController.END_DATE, null);
-        filterTime.put(MealRestController.START_TIME, null);
-        filterTime.put(MealRestController.END_TIME, null);
     }
 
     public List<MealWithExceed> getAll() {
@@ -51,25 +41,22 @@ public class MealRestController {
         return MealsUtil.getWithExceeded(service.getAll(authUserId()), authUserCaloriesPerDay());
     }
 
-    public List<MealWithExceed> getAllFiltered() {
+    public List<MealWithExceed> getAllFiltered(String startDate, String startTime, String endDate, String endTime) {
         log.info("getAll with filter");
-        if (filterDate.get(MealRestController.START_DATE) == null
-            && filterDate.get(MealRestController.END_DATE) == null
-            && filterTime.get(MealRestController.START_TIME) == null
-            && filterTime.get(MealRestController.END_TIME) == null) {
+        try {
+            return MealsUtil.getFilteredWithExceeded(service.getAllFiltered(
+                authUserId(),
+                !startDate.isEmpty() ? LocalDate.parse(startDate) : null,
+                null,
+                !endDate.isEmpty() ? LocalDate.parse(endDate) : null,
+                null),
+                authUserCaloriesPerDay(),
+                !startTime.isEmpty() ? LocalTime.parse(startTime) : LocalTime.MIN,
+                !endTime.isEmpty() ? LocalTime.parse(endTime) : LocalTime.MAX);
+        } catch (DateTimeParseException e) {
+            log.info("getAll with filter: " + e.getMessage());
             return getAll();
         }
-        return MealsUtil.getFilteredWithExceeded(
-            service.getAll(authUserId()),
-            authUserCaloriesPerDay(),
-            filterTime.get(MealRestController.START_TIME) != null ? filterTime.get(MealRestController.START_TIME) : LocalTime.MIN,
-            filterTime.get(MealRestController.END_TIME) != null ? filterTime.get(MealRestController.END_TIME) : LocalTime.MAX
-        ).stream()
-            .filter(mwe -> DateTimeUtil.isBetween(
-                mwe.getDateTime().toLocalDate(),
-                filterDate.get(MealRestController.START_DATE) != null ? filterDate.get(MealRestController.START_DATE) : LocalDate.MIN,
-                filterDate.get(MealRestController.END_DATE) != null ? filterDate.get(MealRestController.END_DATE) : LocalDate.MAX))
-            .collect(Collectors.toList());
     }
 
     public Meal get(int id) {
@@ -92,35 +79,5 @@ public class MealRestController {
         log.info("update {} with id={}", meal, id);
         assureIdConsistent(meal, id);
         service.update(meal, authUserId());
-    }
-
-    public LocalDate getFilterDate(String key) {
-        log.info("Get filter for date: key {} value {}", key, filterDate.get(key));
-        return filterDate.get(key);
-    }
-
-    public void setFilterDate(String key, String value) {
-        log.info("Set filter for date: key {} value {}", key, value);
-        try {
-            filterDate.put(key, LocalDate.parse(value));
-        } catch (DateTimeParseException e) {
-            log.error("Can not parse date", e.getMessage());
-            filterDate.put(key, null);
-        }
-    }
-
-    public LocalTime getFilterTime(String key) {
-        log.info("Get filter for time: key {} value {}", key, filterTime.get(key));
-        return filterTime.get(key);
-    }
-
-    public void setFilterTime(String key, String value) {
-        log.info("Set filter for time: key {} value {}", key, value);
-        try {
-            filterTime.put(key, LocalTime.parse(value));
-        } catch (DateTimeParseException e) {
-            log.error("Can not parse time", e.getMessage());
-            filterTime.put(key, null);
-        }
     }
 }

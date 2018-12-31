@@ -15,9 +15,13 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        log.debug("redirect to users");
-//        request.getRequestDispatcher("/users.jsp").forward(request, response);
-//        response.sendRedirect("users.jsp");
+        log.debug("redirect to users");
+        req.getRequestDispatcher("/users.jsp").forward(req, resp);
+        resp.sendRedirect("users.jsp");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         log.debug("redirect to meals");
         log.info("Authorized user with ID = {}", req.getParameter("userId"));
         try {
@@ -26,10 +30,5 @@ public class UserServlet extends HttpServlet {
             SecurityUtil.setAuthUserId(1);
         }
         resp.sendRedirect("meals");
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
     }
 }
