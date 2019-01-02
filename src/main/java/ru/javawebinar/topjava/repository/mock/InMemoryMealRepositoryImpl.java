@@ -5,17 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
@@ -42,43 +40,34 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
             meal.setId(counter.incrementAndGet());
             return repository.computeIfAbsent(userId, k -> new ConcurrentHashMap<>()).put(meal.getId(), meal);
         }
-        //return repository.computeIfAbsent(userId, k -> new ConcurrentHashMap<>()).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
-        return repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return !repository.isEmpty() ? repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal) : null;
     }
 
     @Override
     public boolean delete(int id, int userId) {
         log.info("delete {}", id);
-        return repository.get(userId).remove(id) != null;
+        return !repository.isEmpty() && repository.get(userId).remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
         log.info("get {}", id);
-        return repository.get(userId).get(id);
+        return !repository.isEmpty() ? repository.get(userId).get(id) : null;
     }
 
     @Override
     public Collection<Meal> getAll(int userId) {
         log.info("get All");
-        return new ArrayList<>(repository.get(userId).values()).stream()
-            .sorted(Comparator.comparing(Meal::getDate).reversed())
-            .collect(Collectors.toList());
+        return getAllFiltered(userId, meal -> true);
     }
 
     @Override
-    public Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        if (startDate == null && startTime == null && endDate == null && endTime == null) {
-            return getAll(userId);
-        }
-        return getAll(userId).stream()
-            .filter(meal -> DateTimeUtil.isBetween(meal.getDate(),
-                startDate != null ? startDate : LocalDate.MIN,
-                endDate != null ? endDate : LocalDate.MAX)
-                && DateTimeUtil.isBetween(meal.getTime(),
-                startTime != null ? startTime : LocalTime.MIN,
-                endTime != null ? endTime : LocalTime.MAX)
-            ).collect(Collectors.toList());
+    public Collection<Meal> getAllFiltered(int userId, Predicate<Meal> filter) {
+        log.info("get All filtered");
+        return new ArrayList<>(repository.get(userId).values()).stream()
+            .sorted(Comparator.comparing(Meal::getDate).reversed())
+            .filter(filter)
+            .collect(Collectors.toList());
     }
 }
 

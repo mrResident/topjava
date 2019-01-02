@@ -36,8 +36,8 @@ public class SpringMain {
             } catch (NotFoundException e) {
                 System.err.println(e.getMessage());
             }
-            System.out.println("== [mealRestController] Get all meals before input > ==");
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
+            System.out.println("== [mealRestController] Get all meals before input > ==");
             mealRestController.getAll().forEach(System.out::println);
             System.out.println("== [mealRestController] Set meals for current user and get meal list > ==");
             mealRestController.create(new Meal(LocalDateTime.of(2015, Month.MAY, 10, 10, 15), "Завтрак", 500));

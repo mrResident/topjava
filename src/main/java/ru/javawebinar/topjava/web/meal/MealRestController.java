@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealWithExceed;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
@@ -46,10 +47,9 @@ public class MealRestController {
         try {
             return MealsUtil.getFilteredWithExceeded(service.getAllFiltered(
                 authUserId(),
-                !startDate.isEmpty() ? LocalDate.parse(startDate) : null,
-                null,
-                !endDate.isEmpty() ? LocalDate.parse(endDate) : null,
-                null),
+                meal -> DateTimeUtil.isBetween(meal.getDate(),
+                    !startDate.isEmpty() ? LocalDate.parse(startDate) : LocalDate.MIN,
+                    !endDate.isEmpty() ? LocalDate.parse(endDate) : LocalDate.MAX)),
                 authUserCaloriesPerDay(),
                 !startTime.isEmpty() ? LocalTime.parse(startTime) : LocalTime.MIN,
                 !endTime.isEmpty() ? LocalTime.parse(endTime) : LocalTime.MAX);
