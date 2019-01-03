@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
+import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
@@ -80,6 +81,26 @@ public class SpringMain {
             System.out.println("== [mealRestController] Trying delete meal from list do not belong for current user > ==");
             try {
                 mealRestController.delete(1);
+            } catch (NotFoundException e) {
+                System.err.println(e.getMessage());
+                mealRestController.getAll().forEach(System.out::println);
+            }
+            System.out.println("== [mealRestController] Trying delete/get/update meal from empty list > ==");
+            SecurityUtil.setAuthUserId(3);
+            try {
+                mealRestController.delete(1);
+            } catch (NotFoundException e) {
+                System.err.println(e.getMessage());
+                mealRestController.getAll().forEach(System.out::println);
+            }
+            try {
+                mealRestController.get(1);
+            } catch (NotFoundException e) {
+                System.err.println(e.getMessage());
+                mealRestController.getAll().forEach(System.out::println);
+            }
+            try {
+                mealRestController.update(new Meal(LocalDateTime.of(2015, Month.MAY, 10, 10, 15), "Завтрак", 500), 1);
             } catch (NotFoundException e) {
                 System.err.println(e.getMessage());
                 mealRestController.getAll().forEach(System.out::println);

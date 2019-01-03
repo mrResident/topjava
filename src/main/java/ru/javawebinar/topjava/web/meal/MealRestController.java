@@ -43,7 +43,11 @@ public class MealRestController {
     public List<MealWithExceed> getAllFiltered(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getAll with filter");
         return MealsUtil.getFilteredWithExceeded(
-            service.getAllFiltered(authUserId(), startDate, endDate),
+            service.getAllFiltered(
+                authUserId(),
+                startDate != null ? startDate : LocalDate.MIN,
+                endDate != null ? endDate : LocalDate.MAX
+            ),
             authUserCaloriesPerDay(),
             startTime != null ? startTime : LocalTime.MIN,
             endTime != null ? endTime : LocalTime.MAX
