@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -40,30 +42,37 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
             meal.setId(counter.incrementAndGet());
             return repository.computeIfAbsent(userId, k -> new ConcurrentHashMap<>()).put(meal.getId(), meal);
         }
-        return !repository.isEmpty() ? repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal) : null;
+        return repository.get(userId) != null ? repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal) : null;
     }
 
     @Override
     public boolean delete(int id, int userId) {
         log.info("delete {}", id);
-        return !repository.isEmpty() && repository.get(userId).remove(id) != null;
+        return repository.get(userId) != null && repository.get(userId).remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
         log.info("get {}", id);
-        return !repository.isEmpty() ? repository.get(userId).get(id) : null;
+        return repository.get(userId) != null ? repository.get(userId).get(id) : null;
     }
 
     @Override
     public Collection<Meal> getAll(int userId) {
         log.info("get All");
-        return getAllFiltered(userId, meal -> true);
+        return getAllRepo(userId, meal -> true);
     }
 
     @Override
-    public Collection<Meal> getAllFiltered(int userId, Predicate<Meal> filter) {
+    public Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate) {
         log.info("get All filtered");
+        return getAllRepo(userId, meal -> DateTimeUtil.isBetween(
+            meal.getDate(),
+            startDate != null ? startDate : LocalDate.MIN,
+            endDate != null ? endDate : LocalDate.MAX));
+    }
+
+    private Collection<Meal> getAllRepo(int userId, Predicate<Meal> filter) {
         return new ArrayList<>(repository.get(userId).values()).stream()
             .sorted(Comparator.comparing(Meal::getDate).reversed())
             .filter(filter)

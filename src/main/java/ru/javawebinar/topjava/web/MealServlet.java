@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -72,10 +74,10 @@ public class MealServlet extends HttpServlet {
             case "set_date_time_filter":
                 log.debug("Set date/time filter");
                 request.setAttribute("meals", mealRestController.getAllFiltered(
-                    request.getParameter(MealRestController.START_DATE),
-                    request.getParameter(MealRestController.START_TIME),
-                    request.getParameter(MealRestController.END_DATE),
-                    request.getParameter(MealRestController.END_TIME)
+                    !request.getParameter(MealRestController.START_DATE).isEmpty() ? LocalDate.parse(request.getParameter(MealRestController.START_DATE)) : null,
+                    !request.getParameter(MealRestController.START_TIME).isEmpty() ? LocalTime.parse(request.getParameter(MealRestController.START_TIME)) : null,
+                    !request.getParameter(MealRestController.END_DATE).isEmpty() ? LocalDate.parse(request.getParameter(MealRestController.END_DATE)) : null,
+                    !request.getParameter(MealRestController.END_TIME).isEmpty() ? LocalTime.parse(request.getParameter(MealRestController.END_TIME)) : null
                 ));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;

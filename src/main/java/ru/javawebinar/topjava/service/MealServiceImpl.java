@@ -6,8 +6,8 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.function.Predicate;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -47,7 +47,7 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public Collection<Meal> getAllFiltered(int userId, Predicate<Meal> filter) {
-        return repository.getAllFiltered(userId, filter);
+    public Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate) {
+        return repository.getAllFiltered(userId, startDate, endDate);
     }
 }
