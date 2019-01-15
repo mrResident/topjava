@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.repository.jdbc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,13 +45,8 @@ public class JdbcMealRepositoryImpl implements MealRepository {
             .addValue("description", meal.getDescription())
             .addValue("calories", meal.getCalories());
         if (meal.isNew()) {
-            try {
-                Number newKey = insertMeal.executeAndReturnKey(map);
-                meal.setId(newKey.intValue());
-            } catch (DuplicateKeyException e) {
-                log.error("Add/update exception", e);
-                return null;
-            }
+            Number newKey = insertMeal.executeAndReturnKey(map);
+            meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
             "UPDATE meals SET date_time=:date_time, description=:description, " +
                 "calories=:calories WHERE id=:id AND user_id=:user_id", map) == 0) {
