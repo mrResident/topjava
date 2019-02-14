@@ -14,8 +14,12 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 public abstract class MealServiceTest extends AbstractServiceTest {
 
+    public MealServiceTest(String testName) {
+        super(testName);
+    }
+
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @Test
     public void delete() throws Exception {

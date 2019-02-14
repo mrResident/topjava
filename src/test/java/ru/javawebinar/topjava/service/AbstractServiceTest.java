@@ -31,7 +31,11 @@ public abstract class AbstractServiceTest {
     private static final Logger log = getLogger("result");
 
     private static StringBuilder results = new StringBuilder();
-    protected static String testName = "";
+    private static String testName = "";
+
+    AbstractServiceTest(String testName) {
+        AbstractServiceTest.testName = testName + " ".repeat(15 - testName.length());
+    }
 
     static {
         // needed only for java.util.logging (postgres driver)

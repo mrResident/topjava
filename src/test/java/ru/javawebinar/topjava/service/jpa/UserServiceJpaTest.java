@@ -8,9 +8,8 @@ import static ru.javawebinar.topjava.Profiles.JPA;
 @ActiveProfiles(JPA)
 public class UserServiceJpaTest extends UserServiceTest {
 
-    static {
-        String name = "User " + JPA;
-        testName =  name + " ".repeat(15 - name.length());
+    public UserServiceJpaTest() {
+        super("User " + JPA);
     }
 
 }
