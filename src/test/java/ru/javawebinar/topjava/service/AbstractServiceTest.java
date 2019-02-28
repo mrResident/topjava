@@ -44,7 +44,7 @@ abstract public class AbstractServiceTest {
     public Environment environment;
 
     public boolean isNotJdbcInActiveSpringProfile() {
-        return !Arrays.toString(environment.getActiveProfiles()).toLowerCase().contains("jdbc");
+        return Arrays.stream(environment.getActiveProfiles()).noneMatch(s -> s.contains("jdbc"));
     }
 
     static {
