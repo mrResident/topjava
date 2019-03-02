@@ -31,30 +31,29 @@ public class JspMealController extends MealController {
     @PostMapping("/update/{id}")
     public String addOrUpdate(@PathVariable int id, HttpServletRequest request) throws UnsupportedEncodingException {
         request.setCharacterEncoding("UTF-8");
+        Meal meal = new Meal(
+            LocalDateTime.parse(request.getParameter("dateTime")),
+            request.getParameter("description"),
+            Integer.parseInt(request.getParameter("calories"))
+        );
         if (id == -1) {
-            Meal meal = new Meal(
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
             create(meal);
         } else {
-            Meal meal = new Meal(
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
             update(meal, id);
         }
         return "redirect:/meals";
     }
 
+    @GetMapping("/update/-1")
+    public String add(Model model) {
+        final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
+        model.addAttribute("meal", meal);
+        return "/mealForm";
+    }
+
     @GetMapping("/update/{id}")
-    public String addOrUpdate(@PathVariable int id, Model model) {
-        if (id == -1) {
-            final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
-            model.addAttribute("meal", meal);
-        } else {
-            model.addAttribute("meal", get(id));
-        }
+    public String update(@PathVariable int id, Model model) {
+        model.addAttribute("meal", get(id));
         return "/mealForm";
     }
 
