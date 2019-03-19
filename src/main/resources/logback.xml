@@ -21,7 +21,8 @@
     </appender>
 
     <logger name="ru.javawebinar.topjava" level="DEBUG"/>
-    <logger name="org.springframework.web.servlet" level="debug"/>
+    <!--<logger name="org.springframework.web.servlet" level="debug"/>-->
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="debug"/>
 
     <root level="INFO">
         <appender-ref ref="file"/>
