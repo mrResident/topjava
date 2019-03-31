@@ -1,10 +1,9 @@
-const ajaxUrl = "ajax/admin/users/";
-let datatableApi;
+const userAjaxCtx = "ajax/admin/users/";
 
 function enable(chkbox, id) {
     const enabled = chkbox.is(":checked");
     $.ajax({
-        url: ajaxUrl + id,
+        url: userAjaxCtx + id,
         type: "POST",
         data: "enabled=" + enabled
     }).done(function () {
@@ -17,40 +16,45 @@ function enable(chkbox, id) {
 
 // $(document).ready(function () {
 $(function () {
-    datatableApi = $("#datatable").DataTable({
-        "paging": false,
-        "info": true,
-        "columns": [
-            {
-                "data": "name"
-            },
-            {
-                "data": "email"
-            },
-            {
-                "data": "roles"
-            },
-            {
-                "data": "enabled"
-            },
-            {
-                "data": "registered"
-            },
-            {
-                "defaultContent": "Edit",
-                "orderable": false
-            },
-            {
-                "defaultContent": "Delete",
-                "orderable": false
-            }
-        ],
-        "order": [
-            [
-                0,
-                "asc"
+    makeEditable({
+        ajaxUrl: userAjaxCtx,
+        datatableApi: $("#datatable").DataTable({
+            "paging": false,
+            "info": true,
+            "columns": [
+                {
+                    "data": "name"
+                },
+                {
+                    "data": "email"
+                },
+                {
+                    "data": "roles"
+                },
+                {
+                    "data": "enabled"
+                },
+                {
+                    "data": "registered"
+                },
+                {
+                    "defaultContent": "Edit",
+                    "orderable": false
+                },
+                {
+                    "defaultContent": "Delete",
+                    "orderable": false
+                }
+            ],
+            "order": [
+                [
+                    0,
+                    "asc"
+                ]
             ]
-        ]
+        }),
+        updateTable: function () {
+            $.get(userAjaxCtx, updateTableWithData);
+        }
     });
-    makeEditable();
 });
